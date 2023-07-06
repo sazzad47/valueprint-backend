@@ -33,9 +33,8 @@ SECRET_KEY = 'django-insecure-b_*jg3e1x)ikum0_-7kfe^*t-qi1g3-lju_iz9#an#@2sdkn4%
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    os.environ.get('BASE_URL'),
-    os.environ.get('CLIENT_BASE_URL'),
-    ]
+    os.environ.get('BASE_HOST'),
+]
 
 
 # Application definition
