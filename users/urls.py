@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import SendPasswordResetEmailView, UserChangePasswordView, UserLoginView, UserProfileView, UserRegistrationView, UserRegistrationVerifyView, UserPasswordResetView, TokenRefreshView, BillingAddressView, UserProfileView, UserProfileDetailView
+from users.views import SendPasswordResetEmailView, UserChangePasswordView, UserLoginView, UserProfileView, UserRegistrationView, UserRegistrationVerifyView, UserPasswordResetView, TokenRefreshView, BillingAddressView, UserProfileView, UserProfileDetailView, AdminLoginView, AdminCodeVerificationView
 
 urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
@@ -13,4 +13,6 @@ urlpatterns = [
     path('billing-address/update/', BillingAddressView.as_view(), name='update-billing-address'),
     path('profile/detail/', UserProfileDetailView.as_view(), name='user-profile-detail'),
     path('profile/update/', UserProfileView.as_view(), name='update-user-profile'),
+    path('admin/verify/', AdminLoginView.as_view(), name='admin-verify'),
+    path('admin/login/', AdminCodeVerificationView.as_view(), name='admin-login'),
 ]

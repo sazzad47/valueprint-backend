@@ -3,11 +3,8 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/auth/', include('users.urls')),
-    path('api/it/', include('it.urls')),
-    path('api/ce/', include('ce.urls')),
-    path('api/gd/', include('gd.urls')),
+    path('api/core/', include('core.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

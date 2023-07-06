@@ -11,6 +11,7 @@ from users.models import User
 from rest_framework import generics
 import pyotp
 from rest_framework.parsers import MultiPartParser, FormParser
+from users.utils import Util
 
 # Generate Token Manually
 def get_tokens_for_user(user):
@@ -70,6 +71,81 @@ class UserLoginView(APIView):
       return Response({'token':token, 'msg':'Login Success'}, status=status.HTTP_200_OK)
     else:
       return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminLoginView(APIView):
+    renderer_classes = [UserRenderer]
+
+    def post(self, request, format=None):
+        serializer = UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.data.get('email')
+        password = serializer.data.get('password')
+        user = authenticate(email=email, password=password)
+        
+        if user is not None and (user.is_admin or user.is_staff):
+            # Generate and send the verification code to the user's email
+            verification_code = generate_verification_code(user)
+            send_verification_code(email, verification_code)
+            return Response({'msg': 'Verification code sent to your email'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'errors': {'non_field_errors': ['Email or Password is not valid']}}, status=status.HTTP_404_NOT_FOUND)
+
+class AdminCodeVerificationView(APIView):
+    renderer_classes = [UserRenderer]
+
+    def post(self, request, format=None):
+        email = request.data.get('email')
+        code = request.data.get('code')
+
+        # Verify the code against the user's email
+        user = User.objects.filter(email=email).first()
+        if user is not None and (user.is_admin or user.is_staff) and verify_verification_code(user, code):
+        # if user is not None and (user.is_admin or user.is_staff) and verify_verification_code(user, code):
+            token = get_tokens_for_user(user)
+            return Response({'token': token, 'msg': 'Login Success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'errors': {'non_field_errors': ['Invalid verification code']}}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class generateKey:
+    @staticmethod
+    def return_value():
+        secret = pyotp.random_base32()
+        totp = pyotp.TOTP(secret, interval=86400)
+        otp = totp.now()
+        return {"totp": secret, "OTP": otp}
+    
+def generate_verification_code(user):
+    key = generateKey.return_value()
+    otp = key['OTP']
+    activation_key=key['totp']
+    user.otp = otp
+    user.activation_key = activation_key
+    user.save()
+    return otp
+
+def verify_verification_code(user, code):
+    activation_key = user.activation_key
+    totp = pyotp.TOTP(activation_key, interval=86400)
+    return totp.verify(code)
+
+def send_verification_code(email, code):
+    body = f"""
+            Hi,
+
+            Please use the following OTP to verify 
+            that it's really you:
+            OTP: {code}
+
+            Regards,
+            Admin
+        """
+    data = {
+        'subject': 'Admin Login Verification Code',
+        'body': body,
+        'to_email': email
+    }
+    Util.send_email(data)
 
 class UserProfileView(APIView):
   renderer_classes = [UserRenderer]
