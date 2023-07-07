@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'core',
     'django.contrib.sites',
     'djmoney',
-
+    'products',
 ]
 
 
@@ -221,6 +221,7 @@ PASSWORD_RESET_TIMEOUT=900          # 900 Sec = 15 Min
 CORS_ALLOWED_ORIGINS = [
     os.environ.get('BASE_URL'),
     os.environ.get('CLIENT_BASE_URL'),
+    'http://localhost:3000',
 ]
 
 # Define the media settings
