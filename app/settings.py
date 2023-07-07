@@ -222,6 +222,7 @@ CORS_ALLOWED_ORIGINS = [
     os.environ.get('BASE_URL'),
     os.environ.get('CLIENT_BASE_URL'),
     'http://localhost:3000',
+    'https://glittery-pie-e0bb6b.netlify.app'
 ]
 
 # Define the media settings
