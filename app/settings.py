@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SITE_ID=1
 
 BASE_URL = os.environ.get('BASE_URL')
+BASE_CLIENT_URL = os.environ.get('CLIENT_BASE_URL')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
