@@ -1,13 +1,20 @@
 from django.urls import path
-from .views import CategoryView, ProductView, VariantView, PriceView
+from .views import (
+    CategoryView,
+    CategoryDetailView,
+    CategoryDeleteView,
+    ProductView,
+    ProductDetailView,
+    ProductDeleteView,
+)
 
 urlpatterns = [
     path('categories/', CategoryView.as_view(), name='category-list'),
-    path('categories/<int:category_id>/', CategoryView.as_view(), name='category-detail'),
-    path('products/', ProductView.as_view(), name='product-list'),
-    path('products/<int:product_id>/', ProductView.as_view(), name='product-detail'),
-    path('variants/', VariantView.as_view(), name='variant-list'),
-    path('variants/<int:variant_id>/', VariantView.as_view(), name='variant-detail'),
-    path('prices/', PriceView.as_view(), name='price-list'),
-    path('prices/<int:price_id>/', PriceView.as_view(), name='price-detail'),
+    path('categories/<int:category_id>/update/', CategoryView.as_view(), name='category-detail-update'),
+    path('categories/<int:pk>/get/', CategoryDetailView.as_view(), name='category-detail-get'),
+    path('categories/<int:category_id>/delete/', CategoryDeleteView.as_view(), name='category-detail-delete'),
+    path('list/', ProductView.as_view(), name='product-list'),
+    path('list/<int:product_id>/update/', ProductView.as_view(), name='product-detail-update'),
+    path('list/<int:pk>/get/', ProductDetailView.as_view(), name='product-detail-get'),
+    path('list/<int:product_id>/delete/', ProductDeleteView.as_view(), name='product-detail-delete'),
 ]

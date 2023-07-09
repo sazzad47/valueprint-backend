@@ -1,26 +1,23 @@
 from rest_framework import serializers
-from .models import Category, Product, Variant, Price
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name']
-
-class PriceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Price
-        fields = ['id', 'variant', 'quantity', 'price']
-
-class VariantSerializer(serializers.ModelSerializer):
-    prices = PriceSerializer(many=True)
-
-    class Meta:
-        model = Variant
-        fields = ['id', 'product', 'name', 'prices']
+from .models import Category, Product
 
 class ProductSerializer(serializers.ModelSerializer):
-    variants = VariantSerializer(many=True)
+    category_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'category', 'name', 'variants']
+        fields = ['id', 'category', 'category_name', 'name', 'photo', 'options', 'cover', 'information', 'artwork', 'templates', 'faq', 'features', 'variants', 'rp', 'dp', 'price']
+
+    def get_category_name(self, product):
+        return product.category.name if product.category else None
+
+class CategorySerializer(serializers.ModelSerializer):
+    products_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'products_count']
+
+    def get_products_count(self, category):
+        return category.product_set.count()
+
