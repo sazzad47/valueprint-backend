@@ -16,6 +16,7 @@ class Product(models.Model):
     artwork = models.JSONField(blank=True, null=True)
     templates = models.JSONField(blank=True, null=True)
     faq = models.JSONField(blank=True, null=True)
+    design_services = models.JSONField(blank=True, null=True)
     features = models.JSONField(blank=True, null=True)
     variants = models.JSONField(blank=True, null=True)
     rp = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)

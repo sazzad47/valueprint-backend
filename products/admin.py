@@ -72,15 +72,16 @@ class OrderAdminForm(forms.ModelForm):
     )
 
 
-    features = forms.JSONField(
+    design_services = forms.JSONField(
         widget=JSONEditorWidget(
             schema={
                 'type': 'array',
                 'items': {
                     'type': 'object',
                     'properties': {
-                        'placeholder': {'type': 'string'},
-                        'value': {
+                        'title': {'type': 'string'},
+                        'price': {'type': 'string'},
+                        'services': {
                             'type': 'array',
                             'items': {
                                 'type': 'string',
@@ -93,45 +94,27 @@ class OrderAdminForm(forms.ModelForm):
         required=False
     )
 
-    variants = forms.JSONField(
+    features = forms.JSONField(
         widget=JSONEditorWidget(
             schema={
                 'type': 'array',
                 'items': {
                     'type': 'object',
                     'properties': {
-                        'name': {'type': 'string'},
-                        'subvariant': {
+                        'placeholder': {'type': 'string'},
+                        'layout': {'type': 'string'},
+                        'allow_customize': {'type': 'boolean'},
+                        'value': {
                             'type': 'array',
                             'items': {
                                 'type': 'object',
-                                'properties': {
-                                    'name': {'type': 'string'},
-                                    'rp': {'type': 'string'},
-                                    'dp': {'type': 'string'},
-                                    'price': {
-                                        'type': 'array',
-                                        'items': {
-                                            'type': 'object',
-                                            'properties': {
-                                                'quantity': {'type': 'string'},
-                                                'price': {'type': 'string'},
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                        'rp': {'type': 'string'},
-                        'dp': {'type': 'string'},
-                        'price': {
-                            'type': 'array',
-                            'items': {
-                                'type': 'object',
-                                'properties': {
-                                    'quantity': {'type': 'string'},
-                                    'price': {'type': 'string'},
-                                },
+                                 'properties': {
+                                     'is_default': {'type': 'boolean'},
+                                     'is_popular': {'type': 'boolean'},
+                                     'photo': {'type': 'string'},
+                                     'title': {'type': 'string'},
+                                     'description': {'type': 'string'},
+                                 }
                             },
                         },
                     },
@@ -140,6 +123,84 @@ class OrderAdminForm(forms.ModelForm):
         ),
         required=False
     )
+
+    variants = forms.JSONField(
+    widget=JSONEditorWidget(
+        schema={
+            'type': 'array',
+            'items': {
+                'type': 'object',
+                'properties': {
+                    'placeholder': {'type': 'string'},
+                    'layout': {'type': 'string'},
+                    'value': {
+                        'type': 'array',
+                        'items': {
+                            'type': 'object',
+                            'properties': {
+                                'is_default': {'type': 'string'},
+                                'is_popular': {'type': 'string'},
+                                'photo': {'type': 'string'},
+                                'title': {'type': 'string'},
+                                'description': {'type': 'string'},
+                                'subvariant': {
+                                    'type': 'array', 
+                                    'items': {
+                                        'type': 'object',
+                                        'properties': {
+                                            'placeholder': {'type': 'string'},
+                                            'layout': {'type': 'string'},
+                                            'value': {
+                                                'type': 'array',
+                                                'items': {
+                                                    'type': 'object',
+                                                    'properties': {
+                                                        'is_default': {'type': 'string'},
+                                                        'is_popular': {'type': 'string'},
+                                                        'photo': {'type': 'string'},
+                                                        'title': {'type': 'string'},
+                                                        'description': {'type': 'string'},
+                                                        'rp': {'type': 'string'},
+                                                        'dp': {'type': 'string'},
+                                                        'price': {
+                                                            'type': 'array',
+                                                            'items': {
+                                                                'type': 'object',
+                                                                'properties': {
+                                                                    'quantity': {'type': 'string'},
+                                                                    'price': {'type': 'string'},
+                                                                    'is_best_seller': {'type': 'boolean'},
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                            'rp': {'type': 'string'},
+                                            'dp': {'type': 'string'},
+                                            'price': {
+                                                'type': 'array',
+                                                'items': {
+                                                    'type': 'object',
+                                                    'properties': {
+                                                        'quantity': {'type': 'string'},
+                                                        'price': {'type': 'string'},
+                                                        'is_best_seller': {'type': 'boolean'},
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    ),
+    required=False,
+)
 
     price = forms.JSONField(
         widget=JSONEditorWidget(
@@ -150,6 +211,7 @@ class OrderAdminForm(forms.ModelForm):
                     'properties': {
                         'quantity': {'type': 'string'},
                         'price': {'type': 'string'},
+                        'is_best_seller': {'type': 'boolean'},
                     },
                 },
             },
