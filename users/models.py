@@ -2,6 +2,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
 from django.utils import timezone
 from django.db.models import JSONField
+from django.contrib.auth.models import PermissionsMixin
 
 # Custom User Manager
 class UserManager(BaseUserManager):
@@ -39,7 +40,7 @@ class UserManager(BaseUserManager):
         return user
 
 # Custom User Model
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     created_at = models.DateTimeField(default=timezone.now)
     email = models.EmailField(
         verbose_name='Email',

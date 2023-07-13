@@ -16,12 +16,12 @@ class OrderAdminForm(forms.ModelForm):
                             'type': 'object',
                             'properties': {
                                 'title': {'type': 'string'},
-                                'description': {'type': 'string'},
-                            },
-                        },
-                    },
-                },
-            },
+                                'description': {'type': 'string'}
+                            }
+                        }
+                    }
+                }
+            }
         ),
         required=False
     )
@@ -39,12 +39,12 @@ class OrderAdminForm(forms.ModelForm):
                             'properties': {
                                 'format': {'type': 'string'},
                                 'pdf': {'type': 'string'},
-                                'image': {'type': 'string'},
-                            },
-                        },
-                    },
-                },
-            },
+                                'image': {'type': 'string'}
+                            }
+                        }
+                    }
+                }
+            }
         ),
         required=False
     )
@@ -61,16 +61,31 @@ class OrderAdminForm(forms.ModelForm):
                             'type': 'object',
                             'properties': {
                                 'question': {'type': 'string'},
-                                'answer': {'type': 'string'},
-                            },
-                        },
-                    },
-                },
-            },
+                                'answer': {'type': 'string'}
+                            }
+                        }
+                    }
+                }
+            }
         ),
         required=False
     )
 
+    options = forms.JSONField(
+        widget=JSONEditorWidget(
+            schema={
+                'type': 'array',
+                'items': {
+                    'type': 'object',
+                    'properties': {
+                        'title': {'type': 'string'},
+                        'description': {'type': 'string'}
+                    }
+                }
+            }
+        ),
+        required=False
+    )
 
     design_services = forms.JSONField(
         widget=JSONEditorWidget(
@@ -84,12 +99,12 @@ class OrderAdminForm(forms.ModelForm):
                         'services': {
                             'type': 'array',
                             'items': {
-                                'type': 'string',
-                            },
-                        },
-                    },
-                },
-            },
+                                'type': 'string'
+                            }
+                        }
+                    }
+                }
+            }
         ),
         required=False
     )
@@ -108,27 +123,25 @@ class OrderAdminForm(forms.ModelForm):
                             'type': 'array',
                             'items': {
                                 'type': 'object',
-                                 'properties': {
-                                     'is_default': {'type': 'boolean'},
-                                     'is_popular': {'type': 'boolean'},
-                                     'photo': {'type': 'string'},
-                                     'title': {'type': 'string'},
-                                     'description': {'type': 'string'},
-                                 }
-                            },
-                        },
-                    },
-                },
-            },
+                                'properties': {
+                                    'is_default': {'type': 'boolean'},
+                                    'is_popular': {'type': 'boolean'},
+                                    'photo': {'type': 'string'},
+                                    'title': {'type': 'string'},
+                                    'description': {'type': 'string'}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         ),
         required=False
     )
 
     variants = forms.JSONField(
-    widget=JSONEditorWidget(
-        schema={
-            'type': 'array',
-            'items': {
+        widget=JSONEditorWidget(
+            schema={
                 'type': 'object',
                 'properties': {
                     'placeholder': {'type': 'string'},
@@ -144,63 +157,59 @@ class OrderAdminForm(forms.ModelForm):
                                 'title': {'type': 'string'},
                                 'description': {'type': 'string'},
                                 'subvariant': {
-                                    'type': 'array', 
-                                    'items': {
-                                        'type': 'object',
-                                        'properties': {
-                                            'placeholder': {'type': 'string'},
-                                            'layout': {'type': 'string'},
-                                            'value': {
-                                                'type': 'array',
-                                                'items': {
-                                                    'type': 'object',
-                                                    'properties': {
-                                                        'is_default': {'type': 'string'},
-                                                        'is_popular': {'type': 'string'},
-                                                        'photo': {'type': 'string'},
-                                                        'title': {'type': 'string'},
-                                                        'description': {'type': 'string'},
-                                                        'rp': {'type': 'string'},
-                                                        'dp': {'type': 'string'},
-                                                        'price': {
-                                                            'type': 'array',
-                                                            'items': {
-                                                                'type': 'object',
-                                                                'properties': {
-                                                                    'quantity': {'type': 'string'},
-                                                                    'price': {'type': 'string'},
-                                                                    'is_best_seller': {'type': 'boolean'},
-                                                                },
-                                                            },
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                            'rp': {'type': 'string'},
-                                            'dp': {'type': 'string'},
-                                            'price': {
-                                                'type': 'array',
-                                                'items': {
-                                                    'type': 'object',
-                                                    'properties': {
-                                                        'quantity': {'type': 'string'},
-                                                        'price': {'type': 'string'},
-                                                        'is_best_seller': {'type': 'boolean'},
-                                                    },
-                                                },
-                                            },
+                                    'type': 'object',
+                                    'properties': {
+                                        'placeholder': {'type': 'string'},
+                                        'layout': {'type': 'string'},
+                                        'value': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'object',
+                                                'properties': {
+                                                    'is_default': {'type': 'string'},
+                                                    'is_popular': {'type': 'string'},
+                                                    'photo': {'type': 'string'},
+                                                    'title': {'type': 'string'},
+                                                    'description': {'type': 'string'},
+                                                    'rp': {'type': 'string'},
+                                                    'dp': {'type': 'string'},
+                                                    'price': {
+                                                        'type': 'array',
+                                                        'items': {
+                                                            'type': 'object',
+                                                            'properties': {
+                                                                'quantity': {'type': 'string'},
+                                                                'price': {'type': 'string'},
+                                                                'is_best_seller': {'type': 'boolean'}
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    ),
-    required=False,
-)
+                                        'rp': {'type': 'string'},
+                                        'dp': {'type': 'string'},
+                                        'price': {
+                                            'type': 'array',
+                                            'items': {
+                                                'type': 'object',
+                                                'properties': {
+                                                    'quantity': {'type': 'string'},
+                                                    'price': {'type': 'string'},
+                                                    'is_best_seller': {'type': 'boolean'}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ),
+        required=False
+    )
 
     price = forms.JSONField(
         widget=JSONEditorWidget(
@@ -211,10 +220,10 @@ class OrderAdminForm(forms.ModelForm):
                     'properties': {
                         'quantity': {'type': 'string'},
                         'price': {'type': 'string'},
-                        'is_best_seller': {'type': 'boolean'},
-                    },
-                },
-            },
+                        'is_best_seller': {'type': 'boolean'}
+                    }
+                }
+            }
         ),
         required=False
     )
@@ -224,9 +233,11 @@ class OrderAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = OrderAdminForm
 
 admin.site.register(Category)
+admin.site.site_header = "Value Printing Pte Ltd Admin"
+admin.site.index_title = "Welcome to Value Printing Pte Ltd"
+admin.site.site_title = "Value Printing Pte Ltd"
