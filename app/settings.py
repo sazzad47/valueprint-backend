@@ -31,7 +31,7 @@ BASE_CLIENT_URL = os.environ.get('CLIENT_BASE_URL')
 SECRET_KEY = 'django-insecure-b_*jg3e1x)ikum0_-7kfe^*t-qi1g3-lju_iz9#an#@2sdkn4%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
