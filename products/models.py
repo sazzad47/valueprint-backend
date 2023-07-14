@@ -7,9 +7,19 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
+
+    RATING_CHOICES = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+    )
+    
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     name = models.CharField(max_length=100, blank=True, null=True)
     photo = models.CharField(max_length=200, blank=True, null=True)
+    rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
     options = models.JSONField(blank=True, null=True)
     cover = models.CharField(max_length=200, blank=True, null=True)
     information = models.CharField(max_length=3000, blank=True, null=True)
