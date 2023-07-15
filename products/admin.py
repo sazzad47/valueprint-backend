@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Category, Product
 from django_admin_json_editor import JSONEditorWidget
 from django import forms
+from .models import Variant, SubVariant, Price, SubVariantOption, Option, Schema, YourModel
 
 class OrderAdminForm(forms.ModelForm):
     artwork = forms.JSONField(
@@ -232,6 +233,45 @@ class OrderAdminForm(forms.ModelForm):
         model = Product
         fields = '__all__'
 
+class PriceInline(admin.TabularInline):
+    model = Price
+
+
+class SubVariantOptionInline(admin.TabularInline):
+    model = SubVariantOption
+
+
+class OptionInline(admin.TabularInline):
+    model = Option
+
+
+class ValueInline(admin.TabularInline):
+    model = Schema.value.through
+
+
+class SubVariantInline(admin.TabularInline):
+    model = SubVariant
+
+
+class SchemaAdmin(admin.ModelAdmin):
+    inlines = [ValueInline]
+
+
+class VariantAdmin(admin.ModelAdmin):
+    inlines = [SubVariantInline]
+
+
+class SubVariantAdmin(admin.ModelAdmin):
+    inlines = [OptionInline, SubVariantOptionInline]
+
+
+class YourModelAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Variant, VariantAdmin)
+admin.site.register(SubVariant, SubVariantAdmin)
+admin.site.register(Schema, SchemaAdmin)
+admin.site.register(YourModel, YourModelAdmin)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
