@@ -46,7 +46,7 @@ class CategoryView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        categories = Category.objects.all()
+        categories = Category.objects.order_by('id')
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data)
 
@@ -100,7 +100,7 @@ class ProductView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        products = Product.objects.all()
+        products = Product.objects.order_by('id')
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
