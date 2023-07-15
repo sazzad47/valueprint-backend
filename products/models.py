@@ -38,12 +38,10 @@ class Product(models.Model):
     
 class Variant(models.Model):
     placeholder = models.CharField(max_length=255)
-    layout = models.CharField(max_length=255)
 
 
 class SubVariant(models.Model):
     placeholder = models.CharField(max_length=255)
-    layout = models.CharField(max_length=255)
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
 
 
@@ -79,7 +77,6 @@ class Option(models.Model):
 
 class Schema(models.Model):
     placeholder = models.CharField(max_length=255)
-    layout = models.CharField(max_length=255)
     value = models.ManyToManyField(Option)
 
 

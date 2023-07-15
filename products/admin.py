@@ -118,7 +118,6 @@ class OrderAdminForm(forms.ModelForm):
                     'type': 'object',
                     'properties': {
                         'placeholder': {'type': 'string'},
-                        'layout': {'type': 'string'},
                         'allow_customize': {'type': 'boolean'},
                         'value': {
                             'type': 'array',
@@ -146,13 +145,12 @@ class OrderAdminForm(forms.ModelForm):
                 'type': 'object',
                 'properties': {
                     'placeholder': {'type': 'string'},
-                    'layout': {'type': 'string'},
                     'value': {
                         'type': 'array',
                         'items': {
                             'type': 'object',
                             'properties': {
-                                'is_default': {'type': 'string'},
+                                'is_default': {'type': 'boolean'},
                                 'is_popular': {'type': 'string'},
                                 'photo': {'type': 'string'},
                                 'title': {'type': 'string'},
@@ -161,14 +159,13 @@ class OrderAdminForm(forms.ModelForm):
                                     'type': 'object',
                                     'properties': {
                                         'placeholder': {'type': 'string'},
-                                        'layout': {'type': 'string'},
                                         'value': {
                                             'type': 'array',
                                             'items': {
                                                 'type': 'object',
                                                 'properties': {
-                                                    'is_default': {'type': 'string'},
-                                                    'is_popular': {'type': 'string'},
+                                                    'is_default': {'type': 'boolean'},
+                                                    'is_popular': {'type': 'boolean'},
                                                     'photo': {'type': 'string'},
                                                     'title': {'type': 'string'},
                                                     'description': {'type': 'string'},
