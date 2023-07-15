@@ -36,53 +36,6 @@ class Product(models.Model):
     def __str__(self):
         return self.name
     
-class Variant(models.Model):
-    placeholder = models.CharField(max_length=255)
-
-
-class SubVariant(models.Model):
-    placeholder = models.CharField(max_length=255)
-    variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
-
-
-class Price(models.Model):
-    quantity = models.CharField(max_length=255)
-    price = models.CharField(max_length=255)
-    is_best_seller = models.BooleanField()
-
-
-class SubVariantOption(models.Model):
-    is_default = models.CharField(max_length=255)
-    is_popular = models.CharField(max_length=255)
-    photo = models.CharField(max_length=255)
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    rp = models.CharField(max_length=255)
-    dp = models.CharField(max_length=255)
-    price = models.ManyToManyField(Price)
-    subvariant = models.ForeignKey(SubVariant, on_delete=models.CASCADE)
-
-
-class Option(models.Model):
-    is_default = models.CharField(max_length=255)
-    is_popular = models.CharField(max_length=255)
-    photo = models.CharField(max_length=255)
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    subvariant = models.ForeignKey(SubVariant, on_delete=models.CASCADE)
-    rp = models.CharField(max_length=255)
-    dp = models.CharField(max_length=255)
-    price = models.ManyToManyField(Price)
-
-
-class Schema(models.Model):
-    placeholder = models.CharField(max_length=255)
-    value = models.ManyToManyField(Option)
-
-
-class YourModel(models.Model):
-    schema = models.ForeignKey(Schema, on_delete=models.CASCADE)
-
 
 
 
