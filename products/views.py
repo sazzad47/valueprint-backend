@@ -8,6 +8,8 @@ from .serializers import (
     CategorySerializer,
     ProductSerializer,
 )
+from rest_framework import generics
+from django.db.models import Q
 
 
 class CategoryView(APIView):
@@ -119,3 +121,23 @@ class ProductDeleteView(APIView):
             return Response({"message": "Product deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Product.DoesNotExist:
             return Response({"message": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+class ProductByCategoryView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        category_name = self.kwargs['category_name']
+        return Product.objects.filter(Q(category__name__icontains=category_name))
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        category_name = self.kwargs['category_name']
+        category = Category.objects.filter(name__icontains=category_name).first()
+
+        category_serializer = CategorySerializer(category)
+        product_serializer = self.get_serializer(queryset, many=True)
+
+        return Response({
+            'category': category_serializer.data,
+            'products': product_serializer.data,
+        })
