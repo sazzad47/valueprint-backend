@@ -100,7 +100,10 @@ class OrderAdminForm(forms.ModelForm):
                         'services': {
                             'type': 'array',
                             'items': {
-                                'type': 'string'
+                                'type': 'object',
+                                'properties': {
+                                    'content': {'type': 'string'}
+                                }
                             }
                         }
                     }
@@ -231,7 +234,7 @@ class OrderAdminForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
-
+    
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):

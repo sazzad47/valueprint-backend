@@ -20,6 +20,8 @@ class Product(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
     photo = models.CharField(max_length=200, blank=True, null=True)
     rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
+    starting_quantity = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
+    starting_price = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
     options = models.JSONField(blank=True, null=True)
     cover = models.CharField(max_length=200, blank=True, null=True)
     information = models.CharField(max_length=3000, blank=True, null=True)
