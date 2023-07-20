@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from django.http import HttpResponse
 from utils import Util
 from rest_framework.decorators import api_view
+from app.settings import BASE_CLIENT_URL
 
 
 class OrderCreateView(generics.CreateAPIView):
@@ -56,39 +57,21 @@ class OrderUpdateView(generics.RetrieveUpdateAPIView):
 
 class PaymentIntentCreateView(APIView):
     def post(self, request, *args, **kwargs):
-        prod_id=self.kwargs["pk"]
         try:
-            product=Order.objects.get(id=prod_id)
-            if product.total_paid <= 0:
-                amount = int(product.advance_price) * 100
-            else:
-                amount = int((product.total_price - product.total_paid) * 100)
+            data = request.data  # Retrieve the data sent from the frontend
             checkout_session = stripe.checkout.Session.create(
-                line_items=[
-                    {
-                        # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                        'price_data': {
-                            'currency':'usd',
-                             'unit_amount':amount,
-                             'product_data':{
-                                 'name':product.title,
-
-                             }
-                        },
-                        'quantity': 1,
-                    },
-                ],
+                line_items=data.get('line_items', []),
+                shipping_options=data.get('shipping_options', []),
                 metadata={
-                    "product_id":product.id
+                    "product_id": "1"
                 },
                 mode='payment',
-                success_url='http://localhost:3000/it/orders/payment' + '?success=true',
-                cancel_url=f"http://localhost:3000/it/profile/orders/{product.id}",
+                success_url=BASE_CLIENT_URL + '/' + 'payment?success=true',
+                cancel_url=BASE_CLIENT_URL + '/' + 'payment?success=false'
             )
             return Response({'checkout_url': checkout_session.url})
         except Exception as e:
-            return Response({'msg':'something went wrong while creating stripe session','error':str(e)}, status=500)
-
+            return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)
 
 
 @csrf_exempt

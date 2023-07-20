@@ -42,15 +42,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            intro=validated_data.get('intro', ''),
-            place_of_birth=validated_data.get('place_of_birth', ''),
-            current_location=validated_data.get('current_location', ''),
-            education=validated_data.get('education', ''),
-            profession=validated_data.get('profession', ''),
-            expertise=validated_data.get('expertise', ''),
-            biography=validated_data.get('biography', ''),
-            social_links=validated_data.get('social_links', []),
-            avatar=validated_data.get('avatar', None),
             otp=key['OTP'],
             activation_key=key['totp']
         )
@@ -96,11 +87,6 @@ class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password']
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'first_name', 'last_name']
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)
@@ -169,4 +155,4 @@ class BillingAddressSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'intro', 'place_of_birth', 'current_location', 'education', 'profession', 'expertise', 'biography', "avatar", 'social_links']
+        fields = ['first_name', 'last_name', 'email', 'is_admin', 'is_staff']
