@@ -72,8 +72,8 @@ class PaymentIntentCreateView(APIView):
                 },
                 metadata=data.get('metadata', {}),
                 mode='payment',
-                success_url=BASE_CLIENT_URL + '/' + 'payment?success=true',
-                cancel_url=BASE_CLIENT_URL + '/' + 'payment?success=false'
+                success_url=BASE_CLIENT_URL + '/' + 'payment-success',
+                cancel_url=BASE_CLIENT_URL + '/' + 'cart'
             )
             return Response({'checkout_url': checkout_session.url})
         except Exception as e:
