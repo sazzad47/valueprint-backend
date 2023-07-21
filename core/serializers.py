@@ -5,8 +5,7 @@ from .models import Transaction
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        exclude = ('date', 'total_price', 'advance_percentage', 'advance_price', 'total_paid', 'status', 'design_file')
-        read_only_fields = ('user',)
+        fields = '__all__'
 
     def create(self, validated_data):
         user = self.context['request'].user

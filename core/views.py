@@ -55,16 +55,22 @@ class OrderUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class PaymentIntentCreateView(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            data = request.data  # Retrieve the data sent from the frontend
+            # Make sure data is a dictionary
+            data = request.data if isinstance(request.data, dict) else {}
+            
+            # Retrieve the line_items from the data dictionary
+            line_items = data.get('line_items', [])
+            
             checkout_session = stripe.checkout.Session.create(
-                line_items=data.get('line_items', []),
-                shipping_options=data.get('shipping_options', []),
-                metadata={
-                    "product_id": "1"
+                line_items=line_items,
+                shipping_address_collection={
+                    'allowed_countries': ['SG'], 
                 },
+                metadata=data.get('metadata', {}),
                 mode='payment',
                 success_url=BASE_CLIENT_URL + '/' + 'payment?success=true',
                 cancel_url=BASE_CLIENT_URL + '/' + 'payment?success=false'
