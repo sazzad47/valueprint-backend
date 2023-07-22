@@ -14,10 +14,10 @@ class Order(models.Model):
 
     date = models.DateField(auto_now_add=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='it_orders')
-    first_name = models.CharField(max_length=100, null=True)
-    last_name = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=100, null=True)
     email = models.EmailField(null=True)
-    shipping_address = models.CharField(max_length=255, null=True)
+    shipping_address = models.JSONField(blank=True, null=True)
+    order_details = models.JSONField(blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending', blank=True)
 
     def __str__(self):

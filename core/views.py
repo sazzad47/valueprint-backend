@@ -2,15 +2,20 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from .serializers import OrderSerializer, OrderListSerializer, OrderItemSerializer, TransactionSerializer
 from .models import Order, Transaction
+from django.contrib.auth import get_user_model
 from django.views.decorators.csrf import csrf_exempt
 import stripe
 from utils import Util
 from django.conf import settings
 from rest_framework.views import APIView
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from utils import Util
 from rest_framework.decorators import api_view
 from app.settings import BASE_CLIENT_URL
+import json
+from django.shortcuts import get_object_or_404
+import os
+from django.core.mail import send_mail
 
 
 class OrderCreateView(generics.CreateAPIView):
@@ -37,6 +42,12 @@ class OrderCreateView(generics.CreateAPIView):
 
         Util.send_email(data)
 
+class OrderAllListView(APIView):
+    def get(self, request, *args, **kwargs):
+        orders = Order.objects.all()
+        serializer = OrderSerializer(orders, many=True)  # Use your custom serializer for the Order model
+        return Response(serializer.data)
+
 class OrderListView(generics.ListAPIView):
     serializer_class = OrderListSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -61,20 +72,46 @@ class PaymentIntentCreateView(APIView):
         try:
             # Make sure data is a dictionary
             data = request.data if isinstance(request.data, dict) else {}
+            print(request.user.id)
+            user = request.user if request.user.is_authenticated else None
             
+            # Modify the metadata dictionary to include the user ID
+            metadata = data.get('metadata', {})
+            cart_items_str = metadata.get('cart_items', '[]')  # Default to an empty list if 'cart_items' key is not present
+            order_id = metadata.get('order_id', None)  
+            cart_items = json.loads(cart_items_str)
             # Retrieve the line_items from the data dictionary
             line_items = data.get('line_items', [])
+            
+            if order_id is not None:
+                # If order_id is provided, check if the order with the given order_id exists
+                order = get_object_or_404(Order, id=order_id)
+                # If the order exists, update its order_details and status instead of creating a new one
+                order.order_details = cart_items
+                order.status = 'unpaid'
+                order.save()
+            else:
+                # If order_id is not provided, create a new order
+                order = Order.objects.create(
+                    user=user,
+                    email=user.email,
+                    order_details=cart_items,  
+                    status='unpaid'
+                )
             
             checkout_session = stripe.checkout.Session.create(
                 line_items=line_items,
                 shipping_address_collection={
                     'allowed_countries': ['SG'], 
                 },
-                metadata=data.get('metadata', {}),
+                metadata= {
+                    'order_id': order.id
+                },
                 mode='payment',
                 success_url=BASE_CLIENT_URL + '/' + 'payment-success',
                 cancel_url=BASE_CLIENT_URL + '/' + 'cart'
             )
+            
             return Response({'checkout_url': checkout_session.url})
         except Exception as e:
             return Response({'msg': 'something went wrong while creating stripe session', 'error': str(e)}, status=500)
@@ -88,62 +125,72 @@ def stripe_webhook(request):
 
     try:
         event = stripe.Webhook.construct_event(
-        payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
     except ValueError as e:
         # Invalid payload
-        return Response(status=400)
+        return JsonResponse({'error': 'Invalid payload'}, status=400)
     except stripe.error.SignatureVerificationError as e:
         # Invalid signature
-        return Response(status=400)
+        return JsonResponse({'error': 'Invalid signature'}, status=400)
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
 
-        print(session)
-        prod_id=session['metadata']['product_id']
-        product=Order.objects.get(id=prod_id)
+        metadata = session.get('metadata', {})
+        order_id = metadata.get('order_id', None)
+        customer_details = session.get('customer_details', {})
+        name = customer_details.get('name', '')  
+        email = customer_details.get('email', '')
+        shipping_details = session.get('shipping_details', {})
+        shipping_address = shipping_details.get('address', {})  # Returns 'Jahangirnagar University'
+        print(metadata)
 
-        amount_total =session['amount_total'] / 100     
-        product.total_paid += int(amount_total)
-        product.save()
+        try:
+            # Update the order only if the payment is successful
+            if session['payment_status'] == 'paid':
+                # Update the order
+                order = Order.objects.get(pk=order_id)  # Use get instead of find
+                order.name = name
+                order.email = email
+                order.shipping_address = shipping_address
+                order.status = 'Paid'
+                order.save()
 
-        if product.total_paid >= product.total_price:
-            product.status = 'Completed'
-            product.save()
-        elif product.total_paid < product.total_price:
-            product.status = 'Processing'
-            product.save()
+                # Create a new transaction instance
+                Transaction.objects.create(
+                    user=order.user,
+                    order=order,
+                    amount=session['amount_total'] / 100,  # Convert cents to the currency
+                    payment_id=session['id'],
+                    status='Completed'
+                )
 
-        Transaction.objects.create(
-            user=product.user,
-            order=product,
-            amount=amount_total,
-            payment_id=session['id'],
-            status='Completed'
-        )
-        
+                # Sending confirmation email to the customer
+                subject = "Payment Received"
+                message = f"Dear {name},<br><br>" \
+                          f"Your payment for order {order.id} has been received.<br><br>" \
+                          f"Order Details:<br><br>"\
+                          f"ID: {order.id}<br>"\
+                          f"Total Price: S${session['amount_total'] / 100}<br>"\
+                          f"Status: {order.status}<br><br>"\
+                          f"If you have any questions or need further assistance, please don't hesitate to contact us.<br><br>"\
+                          f"Best regards,<br>"\
+                          f"Value Print Pte Ltd"
+                data = {
+                    'subject': subject,
+                    'body': '',
+                    'html_body': message,
+                    'to_email': email
+                }
+                Util.send_email(data)
 
-        #sending confimation mail
-        subject = "Payment Received"
-        message = f"Dear {product.first_name},<br><br>" \
-                      f"Your payment for order {prod_id} has been received.<br><br>" \
-                      f"Order Details:<br><br>"\
-                      f"ID: {prod_id}<br>"\
-                      f"Title: {product.title}<br>"\
-                      f"Total Price: {product.total_price}<br>"\
-                      f"Total Paid: {product.total_paid}<br>"\
-                      f"Status: {product.status}<br><br>"\
-                      f"If you have any questions or need further assistance, please don't hesitate to contact us.<br><br>"\
-                      f"Best regards,<br>"\
-                      f"Sazzad Hossen"
-        data = {
-                'subject': subject,
-                'body': '',
-                'html_body': message,
-                'to_email': product.email
-            }
-        Util.send_email(data)
+        except Exception as e:
+            # Handle order creation error
+            print("Error occurred while creating order:")
+            print(str(e))  # Print the error message and stack trace in the terminal
+            return JsonResponse({'error': 'Failed to create order', 'details': str(e)}, status=500)
+
        
     # Passed signature verification
     return HttpResponse(status=200)
@@ -154,3 +201,29 @@ def UserTransactionsView(request):
     transactions = Transaction.objects.filter(user=user)
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def send_contact_form_email(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            name = data.get('name')
+            email = data.get('email')
+            contact_number = data.get('contactNumber')
+            print_category = data.get('printCategory')
+            artwork_ready = data.get('artworkReady')
+            quantity = data.get('quantity')
+            message = data.get('message')
+
+            # Send email using Django's send_mail function
+            subject = f"Contact Form Submission from {name}"
+            body = f"Name: {name}\nEmail: {email}\nContact Number: {contact_number}\nPrint Category: {print_category}\nArtwork Ready: {artwork_ready}\nQuantity: {quantity}\nMessage: {message}"
+            from_email = email  # Replace with your email address
+            to_email = os.environ.get('EMAIL_FROM') # Replace with the recipient's email address
+            send_mail(subject, body, from_email, [to_email])
+
+            return JsonResponse({'message': 'Form submitted successfully'})
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON data'}, status=400)
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=400)

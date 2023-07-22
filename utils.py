@@ -7,9 +7,9 @@ class Util:
     def send_email(data):
         subject = data['subject']
         body = data['body']
-        html_body = data['html_body']  # Retrieve the HTML content
+        html_body = data['html_body']
         to_email = data['to_email']
-        from_email = os.environ.get('EMAIL_FROM')  # Remove the trailing comma
+        from_email = os.environ.get('EMAIL_FROM')
 
         # Create an EmailMultiAlternatives object
         email_message = EmailMultiAlternatives(subject, body, from_email, [to_email])
