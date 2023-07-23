@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import OrderCreateView, OrderUpdateView, OrderDetailView, OrderListView, PaymentIntentCreateView, stripe_webhook, UserTransactionsView, OrderAllListView, send_contact_form_email
+from .views import OrderCreateView, OrderUpdateView, OrderDetailView, OrderListView, PaymentIntentCreateView, stripe_webhook, UserTransactionsView, OrderAllListView, send_contact_form_email, UserAllTransactionsView, DeleteTransactionView, UserAllOrdersView, UpdateOrderStageView, UserGetOrdersByStageView
 
 urlpatterns = [
     path('orders/create/', OrderCreateView.as_view(), name='order-create'),
@@ -10,6 +10,11 @@ urlpatterns = [
     path('create-payment/', PaymentIntentCreateView.as_view(), name='create-payment'),
     path('webhook/', stripe_webhook, name='stripe_webhook'),
     path('transactions/', UserTransactionsView, name='user_transactions'),
+    path('transactions/all/', UserAllTransactionsView, name='user_all_transactions'),
+    path('transactions/<int:transaction_id>/delete/', DeleteTransactionView, name='transactions_delete'),
+    path('orders/admin/all/', UserAllOrdersView, name='admin_all_orders'),
+    path('orders/admin/update/<int:order_id>/', UpdateOrderStageView, name='admin_all_orders'),
+    path('orders/<str:stage>/', UserGetOrdersByStageView.as_view(), name='admin_all_orders'),
     path('send-contact-form-email/', send_contact_form_email, name='send_contact_form_email'),
 
 ]

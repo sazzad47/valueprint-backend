@@ -16,6 +16,9 @@ import json
 from django.shortcuts import get_object_or_404
 import os
 from django.core.mail import send_mail
+from rest_framework import status
+from rest_framework.views import APIView
+
 
 
 class OrderCreateView(generics.CreateAPIView):
@@ -96,7 +99,8 @@ class PaymentIntentCreateView(APIView):
                     user=user,
                     email=user.email,
                     order_details=cart_items,  
-                    status='unpaid'
+                    status='unpaid',
+                    stage='pending'
                 )
             
             checkout_session = stripe.checkout.Session.create(
@@ -155,6 +159,7 @@ def stripe_webhook(request):
                 order.email = email
                 order.shipping_address = shipping_address
                 order.status = 'Paid'
+                order.stage = 'Pending'
                 order.save()
 
                 # Create a new transaction instance
@@ -202,6 +207,49 @@ def UserTransactionsView(request):
     serializer = TransactionSerializer(transactions, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def UserAllTransactionsView(request):
+    transactions = Transaction.objects.all()
+    serializer = TransactionSerializer(transactions, many=True)
+    return Response(serializer.data)
+
+@api_view(['DELETE'])
+def DeleteTransactionView(request, transaction_id):
+    try:
+        transaction = Transaction.objects.get(id=transaction_id)
+    except Transaction.DoesNotExist:
+        return Response({'message': 'Transaction not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        transaction.delete()
+        return Response({'message': 'Transaction deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+
+    return Response({'message': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def UserAllOrdersView(request):
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+@api_view(['PATCH'])
+def UpdateOrderStageView(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+    except Order.DoesNotExist:
+        return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PATCH':
+        new_stage = request.data.get('stage')
+        if new_stage is not None:
+            order.stage = new_stage
+            order.save()
+            return Response({'message': 'Order stage updated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Invalid data, stage not provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({'message': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['POST'])
 def send_contact_form_email(request):
     if request.method == 'POST':
@@ -227,3 +275,15 @@ def send_contact_form_email(request):
             return JsonResponse({'message': 'Invalid JSON data'}, status=400)
     else:
         return JsonResponse({'message': 'Invalid request method'}, status=400)
+
+
+class UserGetOrdersByStageView(generics.ListAPIView):
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        stage = self.kwargs['stage']
+        if stage is not None:
+            return Order.objects.filter(stage__iexact=stage)
+        else:
+            return Order.objects.all()
+

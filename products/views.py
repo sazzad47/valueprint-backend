@@ -15,8 +15,8 @@ from django.db.models import Q
 class CategoryView(APIView):
     
     def post(self, request):
-        if not request.user.is_staff:
-            return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+        # if not request.user.is_staff:
+        #     return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = CategorySerializer(data=request.data)
         if serializer.is_valid():
@@ -31,8 +31,8 @@ class CategoryView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, category_id):
-        if not request.user.is_staff:
-            return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+        # if not request.user.is_staff:
+        #     return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
         category = Category.objects.get(pk=category_id)
         serializer = CategorySerializer(category, data=request.data)
@@ -81,8 +81,8 @@ class CategoryDeleteView(APIView):
 class ProductView(APIView):
     
     def post(self, request):
-        if not request.user.is_staff:
-            return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+        # if not request.user.is_staff:
+        #     return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
@@ -91,8 +91,8 @@ class ProductView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, product_id):
-        if not request.user.is_staff:
-            return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+        # if not request.user.is_staff:
+        #     return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
         product = Product.objects.get(pk=product_id)
         serializer = ProductSerializer(product, data=request.data)
@@ -112,8 +112,8 @@ class ProductDetailView(RetrieveAPIView):
 
 class ProductDeleteView(APIView):
     def delete(self, request, product_id):
-        if not request.user.is_staff:
-            return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+        # if not request.user.is_staff:
+        #     return Response({"message": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
         try:
             product = Product.objects.get(pk=product_id)

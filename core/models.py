@@ -18,7 +18,8 @@ class Order(models.Model):
     email = models.EmailField(null=True)
     shipping_address = models.JSONField(blank=True, null=True)
     order_details = models.JSONField(blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending', blank=True)
+    status = models.CharField(max_length=20, default='unpaid', blank=True)
+    stage = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending', blank=True)
 
     def __str__(self):
         return f"Order #{self.pk} - User: {self.user.email}"
