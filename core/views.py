@@ -228,9 +228,10 @@ def DeleteTransactionView(request, transaction_id):
 
 @api_view(['GET'])
 def UserAllOrdersView(request):
-    orders = Order.objects.all()
+    orders = Order.objects.filter(status='Paid')
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
+
 
 @api_view(['PATCH'])
 def UpdateOrderStageView(request, order_id):
@@ -283,7 +284,7 @@ class UserGetOrdersByStageView(generics.ListAPIView):
     def get_queryset(self):
         stage = self.kwargs['stage']
         if stage is not None:
-            return Order.objects.filter(stage__iexact=stage)
+            return Order.objects.filter(stage__iexact=stage, status='Paid')
         else:
-            return Order.objects.all()
+            return Order.objects.filter(status='Paid')
 
