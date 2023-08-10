@@ -276,6 +276,35 @@ def send_contact_form_email(request):
             return JsonResponse({'message': 'Invalid JSON data'}, status=400)
     else:
         return JsonResponse({'message': 'Invalid request method'}, status=400)
+    
+@api_view(['POST'])
+def send_quotation_request_email(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            email = data.get('email')
+            contact_number = data.get('contact_number')
+            print_category = data.get('print_category')
+            sheet_type = data.get('sheet_type')
+            delivery_date = data.get('delivery_date')
+            is_ready_customer = data.get('is_ready_customer')
+            budget = data.get('budget')
+            artFile = data.get('artFile')
+
+            # Send email using Django's send_mail function
+            subject = f"Quotation request from {first_name} {last_name}"
+            body = f"Name: {first_name} {last_name}\nEmail: {email}\nContact Number: {contact_number}\nPrint Category: {print_category}\nLoose Sheet?: {sheet_type}\nDelivery Date: {delivery_date}\nBudget: {budget}\nIs Customer Ready?: {is_ready_customer}\nUploaded File: {artFile}"
+            from_email = email  # Replace with your email address
+            to_email = os.environ.get('EMAIL_FROM') # Replace with the recipient's email address
+            send_mail(subject, body, from_email, [to_email])
+
+            return JsonResponse({'message': 'Form submitted successfully'})
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON data'}, status=400)
+    else:
+        return JsonResponse({'message': 'Invalid request method'}, status=400)
 
 
 class UserGetOrdersByStageView(generics.ListAPIView):

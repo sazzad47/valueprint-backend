@@ -321,7 +321,8 @@ CORS_ALLOWED_ORIGINS = [
     os.environ.get('CLIENT_BASE_URL'),
     'http://localhost:3000',
     'https://glittery-pie-e0bb6b.netlify.app',
-    'https://hilarious-alfajores-4ef005.netlify.app'
+    'https://hilarious-alfajores-4ef005.netlify.app',
+    'http://promo.valueprint.com.sg',
 
 ]
 

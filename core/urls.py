@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import OrderCreateView, OrderUpdateView, OrderDetailView, OrderListView, PaymentIntentCreateView, stripe_webhook, UserTransactionsView, OrderAllListView, send_contact_form_email, UserAllTransactionsView, DeleteTransactionView, UserAllOrdersView, UpdateOrderStageView, UserGetOrdersByStageView
+from .views import OrderCreateView, OrderUpdateView, OrderDetailView, OrderListView, PaymentIntentCreateView, stripe_webhook, UserTransactionsView, OrderAllListView, send_contact_form_email, UserAllTransactionsView, DeleteTransactionView, UserAllOrdersView, UpdateOrderStageView, UserGetOrdersByStageView, send_quotation_request_email
 
 urlpatterns = [
     path('orders/create/', OrderCreateView.as_view(), name='order-create'),
@@ -16,5 +16,6 @@ urlpatterns = [
     path('orders/admin/update/<int:order_id>/', UpdateOrderStageView, name='admin_all_orders'),
     path('orders/<str:stage>/', UserGetOrdersByStageView.as_view(), name='admin_all_orders'),
     path('send-contact-form-email/', send_contact_form_email, name='send_contact_form_email'),
+    path('send-quote-req-email/', send_quotation_request_email, name='send_quotation_request_email'),
 
 ]
