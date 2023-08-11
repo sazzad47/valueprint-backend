@@ -323,6 +323,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://glittery-pie-e0bb6b.netlify.app',
     'https://hilarious-alfajores-4ef005.netlify.app',
     'http://promo.valueprint.com.sg',
+    'http://test.valueprint.com.sg',
 
 ]
 
