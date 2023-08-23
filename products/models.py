@@ -37,6 +37,7 @@ class Product(models.Model):
     templates = models.JSONField(blank=True, null=True)
     faq = models.JSONField(blank=True, null=True)
     design_services = models.JSONField(blank=True, null=True)
+    intro = models.JSONField(blank=True, null=True)
     features = models.JSONField(blank=True, null=True)
     variants = models.JSONField(blank=True, null=True)
     rp = models.CharField(max_length=100, blank=True, null=True)
