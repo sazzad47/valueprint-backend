@@ -125,32 +125,6 @@ class OrderAdminForm(forms.ModelForm):
         required=False
     )
 
-    intro = forms.JSONField(
-        widget=JSONEditorWidget(
-            schema={
-                'type': 'array',
-                'items': {
-                    'type': 'object',
-                    'properties': {
-                        'placeholder': {'type': 'string'},
-                        'value': {
-                            'type': 'array',
-                            'items': {
-                                'type': 'object',
-                                'properties': {
-                                    'photo': {'type': 'string'},
-                                    'title': {'type': 'string'},
-                                    'features': {'type': 'array'}
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        ),
-        required=False
-    )
-
     features = forms.JSONField(
         widget=JSONEditorWidget(
             schema={
