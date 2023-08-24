@@ -87,6 +87,21 @@ class OrderAdminForm(forms.ModelForm):
         ),
         required=False
     )
+    ideas = forms.JSONField(
+        widget=JSONEditorWidget(
+            schema={
+                'type': 'array',
+                'items': {
+                    'type': 'object',
+                    'properties': {
+                        'title': {'type': 'string'},
+                        'photo': {'type': 'string'}
+                    }
+                }
+            }
+        ),
+        required=False
+    )
 
     perfect_for = forms.JSONField(
         widget=JSONEditorWidget(
