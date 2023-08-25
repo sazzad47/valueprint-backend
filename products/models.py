@@ -23,6 +23,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
     slogan = models.CharField(max_length=100, blank=True, null=True)
     photo = models.CharField(max_length=200, blank=True, null=True)
+    pdf = models.CharField(max_length=200, blank=True, null=True)
     rating = models.CharField(max_length=100, blank=True, null=True)
     starting_quantity = models.CharField(max_length=100, blank=True, null=True)
     starting_price = models.CharField(max_length=100, blank=True, null=True)

@@ -6,7 +6,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'category', 'category_name', 'name', 'slogan', 'photo', 'intro_photo', 'rating', 'starting_quantity', 'starting_price', 'options', 'cover', 'short_description', 'perfect_for', 'ideas', 'information', 'artwork', 'templates', 'design_services', 'faq', 'intro', 'features', 'variants', 'rp', 'dp', 'price']
+        fields = ['id', 'category', 'category_name', 'name', 'slogan', 'photo', 'pdf', 'intro_photo', 'rating', 'starting_quantity', 'starting_price', 'options', 'cover', 'short_description', 'perfect_for', 'ideas', 'information', 'artwork', 'templates', 'design_services', 'faq', 'intro', 'features', 'variants', 'rp', 'dp', 'price']
 
     def get_category_name(self, product):
         return product.category.name if product.category else None
