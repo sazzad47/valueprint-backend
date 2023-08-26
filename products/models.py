@@ -43,6 +43,7 @@ class Product(models.Model):
     variants = models.JSONField(blank=True, null=True)
     rp = models.CharField(max_length=100, blank=True, null=True)
     dp = models.CharField(max_length=100, blank=True, null=True)
+    pricing = models.JSONField(blank=True, null=True)
     price = models.JSONField(blank=True, null=True)
 
     def __str__(self):
