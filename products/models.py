@@ -30,6 +30,7 @@ class Product(models.Model):
     options = models.JSONField(blank=True, null=True)
     intro_photo = models.URLField(blank=True, null=True)
     cover = models.URLField(blank=True, null=True)
+    cover_photo = models.JSONField(blank=True, null=True)
     short_description = models.TextField(blank=True, null=True)
     perfect_for = models.JSONField(blank=True, null=True)
     ideas = models.JSONField(blank=True, null=True)
