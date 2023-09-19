@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html, mark_safe
 from django.conf import settings
-from .models import Order
+from .models import Order, Blog
 from utils import Util
 from .models import Transaction
 from django import forms
@@ -24,5 +24,11 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'order', 'amount', 'status', 'created_at')
     list_filter = ('status', 'created_at')
     search_fields = ('user__email', 'order__title')
+
+@admin.register(Blog)
+class BlogAdmin(admin.ModelAdmin):
+    list_display = ('id', 'created_at', 'title')
+    list_filter = ('title', 'created_at')
+    search_fields = ('title', 'id', 'content')
 
 admin.site.unregister(Group)

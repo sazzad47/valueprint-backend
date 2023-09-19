@@ -41,4 +41,16 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"Transaction #{self.pk} - User: {self.user.email}"
+    
+class Blog(models.Model):
+
+    title = models.TextField(blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    photo = models.URLField(blank=False, null=False)
+    cover_photo = models.URLField(blank=False, null=False)
+    content = models.TextField(blank=False, null=False)
+
+    def __str__(self):
+        return self.title
+
 
